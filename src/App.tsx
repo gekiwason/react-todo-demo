@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {FormControl, TextField} from "@material-ui/core";
+import { FormControl, TextField } from "@material-ui/core";
 import "./App.css";
 import { db } from "./firebase";
+import AddToPhotosIcon from "@material-ui/icons/AddToPhotos";
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState([{ id: "", title: "" }]);
@@ -19,6 +20,11 @@ const App: React.FC = () => {
     };
   }, []);
 
+  const newTask = (e: React.MouseEvent<HTMLButtonElement>) => {
+    db.collection("tasks").add({ title: input });
+    setInput("");
+  };
+
   return (
     <div className="App">
       <h1>react-todo-demo</h1>
@@ -27,11 +33,16 @@ const App: React.FC = () => {
           InputLabelProps={{
             shrink: true,
           }}
-          label = "New task?"
-          value = {input}
-          onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+          label="New task?"
+          value={input}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInput(e.target.value)
+          }
         />
       </FormControl>
+      <button disabled={!input} onClick={newTask}>
+        <AddToPhotosIcon />
+      </button>
       {tasks.map((task) => (
         <h3 key={task.id}>{task.title}</h3>
       ))}
